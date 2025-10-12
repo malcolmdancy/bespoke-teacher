@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Information Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .form-container {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #4facfe;
+        }
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: #4facfe;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-row-three {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95em;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+            transform: translateY(-1px);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .term-group {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e1e5e9;
+            transition: all 0.3s ease;
+        }
+        .term-group:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        .term-header {
+            font-weight: 600;
+            color: #4facfe;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .date-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .holiday-group {
+            background: #f0f8ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .holiday-group h4 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        .success-message {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+            border: 2px solid #b3d7c2;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+        }
+        .success-message h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #0f5132;
+        }
+        @media (max-width: 768px) {
+            .form-row, .form-row-three, .date-group {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                margin: 10px;
+            }
+            .form-container {
+                padding: 20px;
+            }
+            .header {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>School Information Form</h1>
+            <p>Please provide your school details and academic calendar information</p>
+        </div>
+
+        <div class="form-container">
+            <form id="schoolForm">
+                <div class="section">
+                    <h2>School Information</h2>
+                    <div class="form-group">
+                        <label for="schoolName">School Name *</label>
+                        <input type="text" id="schoolName" name="schoolName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">School Address *</label>
+                        <textarea id="address" name="address" placeholder="Enter full address including postcode" required></textarea>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Contact Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactName">Contact Name *</label>
+                            <input type="text" id="contactName" name="contactName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail">Email Address *</label>
+                            <input type="email" id="contactEmail" name="contactEmail" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number *</label>
+                        <input type="tel" id="contactNumber" name="contactNumber" required>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>School Day Structure</h2>
+                    <div class="form-group">
+                        <label for="numPeriods">Number of periods in a school day *</label>
+                        <select id="numPeriods" name="numPeriods" required onchange="generatePeriodFields()">
+                            <option value="">Select number of periods</option>
+                            <option value="5">5 periods</option>
+                            <option value="6">6 periods</option>
+                            <option value="7">7 periods</option>
+                            <option value="8">8 periods</option>
+                            <option value="9">9 periods</option>
+                            <option value="10">10 periods</option>
+                        </select>
+                    </div>
+                    <div id="periodNamesContainer" style="display: none;">
+                        <label>Period Names *</label>
+                        <p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">
+                            Enter the name for each period (e.g., "1", "2", "Break", "4A", "4B", "Lunch", "5", etc.)
+                        </p>
+                        <div id="periodFields" class="form-row-three">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Academic Calendar 2024/2025</h2>
+                    <div class="term-group">
+                        <div class="term-header">Autumn Term</div>
+                        <div class="date-group">
+                            <div class="form-group">
+                                <label for="autumnStart">Term Start Date *</label>
+                                <input type="date" id="autumnStart" name="autumnStart" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="autumnEnd">Term End Date *</label>
+                                <input type="date" id="autumnEnd" name="autumnEnd" required>
+                            </div>
+                        </div>
+                        <div class="holiday-group">
+                            <h4>Half-Term Holiday</h4>
+                            <div class="date-group">
+                                <div class="form-group">
+                                    <label for="autumnHalfStart">Holiday Start</label>
+                                    <input type="date" id="autumnHalfStart" name="autumnHalfStart">
+                                </div>
+                                <div class="form-group">
+                                    <label for="autumnHalfEnd">Holiday End</label>
+                                    <input type="date" id="autumnHalfEnd" name="autumnHalfEnd">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="term-group">
+                        <div class="term-header">Spring Term</div>
+                        <div class="date-group">
+                            <div class="form-group">
+                                <label for="springStart">Term Start Date *</label>
+                                <input type="date" id="springStart" name="springStart" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="springEnd">Term End Date *</label>
+                                <input type="date" id="springEnd" name="springEnd" required>
+                            </div>
+                        </div>
+                        <div class="holiday-group">
+                            <h4>Half-Term Holiday</h4>
+                            <div class="date-group">
+                                <div class="form-group">
+                                    <label for="springHalfStart">Holiday Start</label>
+                                    <input type="date" id="springHalfStart" name="springHalfStart">
+                                </div>
+                                <div class="form-group">
+                                    <label for="springHalfEnd">Holiday End</label>
+                                    <input type="date" id="springHalfEnd" name="springHalfEnd">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="term-group">
+                        <div class="term-header">Summer Term</div>
+                        <div class="date-group">
+                            <div class="form-group">
+                                <label for="summerStart">Term Start Date *</label>
+                                <input type="date" id="summerStart" name="summerStart" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="summerEnd">Term End Date *</label>
+                                <input type="date" id="summerEnd" name="summerEnd" required>
+                            </div>
+                        </div>
+                        <div class="holiday-group">
+                            <h4>Half-Term Holiday</h4>
+                            <div class="date-group">
+                                <div class="form-group">
+                                    <label for="summerHalfStart">Holiday Start</label>
+                                    <input type="date" id="summerHalfStart" name="summerHalfStart">
+                                </div>
+                                <div class="form-group">
+                                    <label for="summerHalfEnd">Holiday End</label>
+                                    <input type="date" id="summerHalfEnd" name="summerHalfEnd">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit School Information</button>
+
+                <div id="successMessage" class="success-message">
+                    Form submitted successfully! Your data has been saved as a JSON file.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function generatePeriodFields() {
+            const numPeriods = document.getElementById('numPeriods').value;
+            const container = document.getElementById('periodNamesContainer');
+            const fieldsContainer = document.getElementById('periodFields');
+            
+            if (numPeriods && numPeriods > 0) {
+                container.style.display = 'block';
+                fieldsContainer.innerHTML = '';
+                
+                for (let i = 1; i <= parseInt(numPeriods); i++) {
+                    const fieldDiv = document.createElement('div');
+                    fieldDiv.className = 'form-group';
+                    fieldDiv.innerHTML = `
+                        <label for="period${i}">Period ${i} *</label>
+                        <input type="text" id="period${i}" name="period${i}" required placeholder="e.g., ${i}, P${i}, Break, Lunch">
+                    `;
+                    fieldsContainer.appendChild(fieldDiv);
+                }
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('schoolForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const data = {};
+
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+
+                const addressLines = data.address.split('\n').map(line => line.trim()).filter(line => line);
+                
+                let postcode = '';
+                let city = '';
+                let address_line1 = addressLines[0] || '';
+                let address_line2 = addressLines[1] || '';
+                
+                if (addressLines.length > 0) {
+                    const lastLine = addressLines[addressLines.length - 1];
+                    const postcodeMatch = lastLine.match(/([A-Z]{1,2}[0-9][A-Z0-9]?\s?[0-9][A-Z]{2})/i);
+                    
+                    if (postcodeMatch) {
+                        postcode = postcodeMatch[1].toUpperCase();
+                        city = lastLine.replace(postcodeMatch[1], '').trim().replace(/,$/, '');
+                    } else {
+                        city = lastLine;
+                    }
+                }
+
+                const numPeriods = parseInt(data.numPeriods);
+                const periodNames = [];
+                
+                for (let i = 1; i <= numPeriods; i++) {
+                    const periodName = data[`period${i}`] || `Period ${i}`;
+                    periodNames.push(periodName);
+                }
+
+                const schoolData = {
+                    schoolInfo: {
+                        name: data.schoolName,
+                        address_line1: address_line1,
+                        address_line2: address_line2,
+                        city: city,
+                        postcode: postcode,
+                        phone: data.contactNumber || '',
+                        email: data.contactEmail || '',
+                        website: "",
+                        period_names: JSON.stringify(periodNames)
+                    },
+                    academicCalendar: {
+                        autumnTerm: {
+                            startDate: data.autumnStart || '',
+                            endDate: data.autumnEnd || '',
+                            halfTermHoliday: {
+                                startDate: data.autumnHalfStart || null,
+                                endDate: data.autumnHalfEnd || null
+                            }
+                        },
+                        springTerm: {
+                            startDate: data.springStart || '',
+                            endDate: data.springEnd || '',
+                            halfTermHoliday: {
+                                startDate: data.springHalfStart || null,
+                                endDate: data.springHalfEnd || null
+                            }
+                        },
+                        summerTerm: {
+                            startDate: data.summerStart || '',
+                            endDate: data.summerEnd || '',
+                            halfTermHoliday: {
+                                startDate: data.summerHalfStart || null,
+                                endDate: data.summerHalfEnd || null
+                            }
+                        }
+                    },
+                    submissionDate: new Date().toISOString()
+                };
+
+                const filename = data.schoolName.replace(/\s+/g, '') + 'Info.json';
+
+                // Create and download the JSON file
+                try {
+                    const jsonString = JSON.stringify(schoolData, null, 2);
+                    const blob = new Blob([jsonString], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = url;
+                    downloadLink.download = filename;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                    URL.revokeObjectURL(url);
+                    
+                    // Show thank you message with download confirmation
+                    const successDiv = document.getElementById('successMessage');
+                    successDiv.innerHTML = `
+                        <h3>🎉 Thank You!</h3>
+                        <p>Your school information has been successfully submitted.</p>
+                        <p><strong>✓ File Downloaded:</strong> ${filename}</p>
+                        <p style="margin-top: 15px; padding: 15px; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #28a745;">
+                            <strong>Next Steps:</strong><br>
+                            • Check your Downloads folder for the JSON file<br>
+                            • Share this file with your timetable coordinator<br>
+                            • You can now set up teacher timetable forms
+                        </p>
+                        <details style="margin-top: 15px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #4facfe;">📄 View Generated Data</summary>
+                            <textarea id="jsonOutput" style="width: 100%; height: 200px; font-family: monospace; font-size: 11px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px;" readonly>${jsonString}</textarea>
+                            <button onclick="copyToClipboard()" style="padding: 6px 12px; background: #4facfe; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 8px; font-size: 14px;">Copy JSON</button>
+                        </details>
+                    `;
+                    
+                } catch (error) {
+                    // Fallback if download fails (e.g., in some restricted environments)
+                    console.error('Download failed:', error);
+                    const successDiv = document.getElementById('successMessage');
+                    successDiv.innerHTML = `
+                        <h3>🎉 Thank You!</h3>
+                        <p>Your school information has been successfully submitted.</p>
+                        <p><strong>⚠️ Automatic download not available</strong></p>
+                        <p>Please copy the JSON data below and save it as: <strong>${filename}</strong></p>
+                        <textarea id="jsonOutput" style="width: 100%; height: 250px; font-family: monospace; font-size: 12px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;" readonly>${JSON.stringify(schoolData, null, 2)}</textarea>
+                        <button onclick="copyToClipboard()" style="padding: 8px 16px; background: #4facfe; color: white; border: none; border-radius: 5px; cursor: pointer;">Copy JSON</button>
+                        <p style="margin-top: 10px; font-size: 14px; color: #666;">
+                            Right-click in the text area above → Select All → Copy, then paste into a text file and save as ${filename}
+                        </p>
+                    `;
+                }
+                
+                successDiv.style.display = 'block';
+                successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+
+        function copyToClipboard() {
+            const textarea = document.getElementById('jsonOutput');
+            if (textarea) {
+                textarea.select();
+                textarea.setSelectionRange(0, 99999);
+                
+                try {
+                    document.execCommand('copy');
+                    alert('JSON copied to clipboard!');
+                } catch (err) {
+                    alert('Failed to copy. Please select the text and copy manually.');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

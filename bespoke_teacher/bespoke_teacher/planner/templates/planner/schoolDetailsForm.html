@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Information Form</title>
+    <link rel="stylesheet" href="school-form.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>School Information Form</h1>
+            <p>Please provide your school details and academic calendar information</p>
+        </div>
+
+        <div class="form-container">
+            <form id="schoolForm">
+                <!-- School Information Section -->
+                <div class="section">
+                    <h2>School Information</h2>
+                    <div class="form-group">
+                        <label for="schoolName">School Name *</label>
+                        <input type="text" id="schoolName" name="schoolName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">School Address *</label>
+                        <textarea id="address" name="address" placeholder="Enter full address including postcode" required></textarea>
+                    </div>
+                </div>
+
+                <!-- Contact Information Section -->
+                <div class="section">
+                    <h2>Contact Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactName">Contact Name *</label>
+                            <input type="text" id="contactName" name="contactName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail">Email Address *</label>
+                            <input type="email" id="contactEmail" name="contactEmail" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number *</label>
+                        <input type="tel" id="contactNumber" name="contactNumber" required>
+                    </div>
+                </div>
+
+                <!-- School Day Structure Section -->
+                <div class="section">
+                    <h2>School Day Structure</h2>
+                    <div class="form-group">
+                        <label for="numPeriods">Number of periods in a school day *</label>
+                        <select id="numPeriods" name="numPeriods" required>
+                            <option value="">Select number of periods</option>
+                            <option value="5">5 periods</option>
+                            <option value="6">6 periods</option>
+                            <option value="7">7 periods</option>
+                            <option value="8">8 periods</option>
+                            <option value="9">9 periods</option>
+                            <option value="10">10 periods</option>
+                        </select>
+                    </div>
+                    <div id="periodNamesContainer" style="display: none;">
+                        <label>Period Names *</label>
+                        <p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">
+                            Enter the name for each period (e.g., "1", "2", "Break", "4A", "4B", "Lunch", "5", etc.)
+                        </p>
+                        <div id="periodFields" class="form-row-three">
+                            <!-- Period input fields will be generated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Calendar Section -->
+                <div class="section">
+                    <h2>Academic Calendar 2024/2025</h2>
+
+                    <!-- Autumn Term -->
+                    <div class="term-group">
+                        <div class="term-header">Autumn Term</div>
+                        <div class="date-group">
+                            <div class="form-group">
+                                <label for="autumnStart">Term Start Date *</label>
+                                <input type="date" id="autumnStart" name="autumnStart" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="autumnEnd">Term End Date *</label>
+                                <input type="date" id="autumnEnd" name="autumnEnd" required>
+                            </div>
+                        </div>
+                        <div class="holiday-group">
+                            <h4>Half-Term Holiday</h4>
+                            <div class="date-group">
+                                <div class="form-group">
+                                    <label for="autumnHalfStart">Holiday Start</label>
+                                    <input type="date" id="autumnHalfStart" name="autumnHalfStart">
+                                </div>
+                                <div class="form-group">
+                                    <label for="autumnHalfEnd">Holiday End</label>
+                                    <input type="date" id="autumnHalfEnd" name="autumnHalfEnd">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spring Term -->
+                    <div class="term-group">
+                        <div class="term-header">Spring Term</div>
+                        <div class="date-group">
+                            <div class="form-group">
+                                <label for="springStart">Term Start Date *</label>
+                                <input type="date" id="springStart" name="springStart" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="springEnd">Term End Date *</label>
+                                <input type="date" id="springEnd" name="springEnd" required>
+                            </div>
+                        </div>
+                        <div class="holiday-group">
+                            <h4>Half-Term Holiday</h4>
+                            <div class="date-group">
+                                <div class="form-group">
+                                    <label for="springHalfStart">Holiday Start</label>
+                                    <input type="date" id="springHalfStart" name="springHalfStart">
+                                </div>
+                                <div class="form-group">
+                                    <label for="springHalfEnd">Holiday End</label>
+                                    <input type="date" id="springHalfEnd" name="springHalfEnd">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summer Term -->
+                    <div class="term-group">
+                        <div class="term-header">Summer Term</div>
+                        <div class="date-group">
+                            <div class="form-group">
+                                <label for="summerStart">Term Start Date *</label>
+                                <input type="date" id="summerStart" name="summerStart" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="summerEnd">Term End Date *</label>
+                                <input type="date" id="summerEnd" name="summerEnd" required>
+                            </div>
+                        </div>
+                        <div class="holiday-group">
+                            <h4>Half-Term Holiday</h4>
+                            <div class="date-group">
+                                <div class="form-group">
+                                    <label for="summerHalfStart">Holiday Start</label>
+                                    <input type="date" id="summerHalfStart" name="summerHalfStart">
+                                </div>
+                                <div class="form-group">
+                                    <label for="summerHalfEnd">Holiday End</label>
+                                    <input type="date" id="summerHalfEnd" name="summerHalfEnd">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit School Information</button>
+
+                <div id="successMessage" class="success-message">
+                    Form submitted successfully! Your data has been saved as a JSON file.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

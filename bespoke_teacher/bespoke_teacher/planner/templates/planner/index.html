@@ -1,0 +1,13 @@
+{% extends "planner/layout.html" %}
+
+
+{% block body %}
+        <h1>This is the page</h1>
+        <h2> Is it time to order a planner yet?</h2>
+            {% if summer %}
+            <h2> YES </h2>
+            {% else %}
+            <h2> NO </h2>
+            {% endif %}
+{% endblock %}
+
