@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Bespoke Teacher</title>
+        <link href="{% static 'planner/styles.css' %}" rel="stylesheet">
+        </head>
+    <body>
+        <header>
+            <nav class="navbar">
+                <a href="index.html" class="logo-container">
+                    <span class="logo">bespoke teacher</span>
+                    <span class="tagline">for teachers, by teachers</span>
+                </a>
+                <div class="nav-links">
+                    <a href="about.html">about us</a>
+                    <a href="product.html">Product</a>
+                    <a href="blog.html">Blog</a>
+                </div>
+            </nav>
+        </header>
+        {% block body %}
+        {% endblock %}
+    </body>
+</html>
