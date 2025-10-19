@@ -3,5 +3,6 @@ from . import views
 
 app_name = 'planner' 
 urlpatterns = [
-    path("", views.index, name='index')
+    path("", views.index, name='index'),
+    path("", views.blog, name='blog'),
 ]
