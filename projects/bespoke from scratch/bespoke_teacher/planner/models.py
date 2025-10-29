@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 class Product(models.Model):
@@ -49,10 +50,10 @@ class Orders(models.Model):
 
 class Blog(models.Model):
     text = models.TextField(max_length=4096)
-    author_code = models.CharField(max_length=3)
-    date = models.DateField(auto_now=True)
+    author_code = models.CharField(max_length=3, default='MPD')
+    date = models.DateField(default=timezone.now)
     subject = models.CharField(max_length=64)
-    subject_code = models.CharField(max_length=3)
+    subject_code = models.CharField(max_length=3, default='PLR')
 
     def __str__(self):
         return f"{self.subject}\n{self.date} -- {self.text}"

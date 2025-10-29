@@ -1,8 +1,17 @@
 {% extends "planner/layout.html" %}
 
 {% block body %}
-    <h1>Bespoke Teacher Blog</h1>
-    {% for blog in blogs %}
-        <p>blog</p>
-    {% endfor %}
+    <main>
+        <section class="hero-section">
+            <h1>What we've been doing</h1>
+            <section class="text-content">
+                {% for blog in blogs %}
+                <article>
+                    <h2 class="blog-date">{{ blog.date|date:"F d, Y" }} - {{ blog.subject }}</h2>
+                    <p>{{ blog.text }}</p>
+                </article>
+                {% endfor %}     
+            </section>
+        </section>
+    </main>
 {% endblock %}

@@ -6,19 +6,22 @@
         <link href="{% static 'planner/styles.css' %}" rel="stylesheet">
         </head>
     <body>
+
         <header>
             <nav class="navbar">
-                <a href="index.html" class="logo-container">
+                <! uses Djngo's URL resover>
+                <a href="{% url 'planner:index' %}" class="logo-container">
                     <span class="logo">bespoke teacher</span>
                     <span class="tagline">for teachers, by teachers</span>
                 </a>
                 <div class="nav-links">
-                    <a href="about.html">about us</a>
-                    <a href="product.html">Product</a>
-                    <a href="blog.html">Blog</a>
+                    <a href="{% url 'planner:about' %}">about us</a>
+                    <a href="{% url 'planner:product' %}">Product</a>
+                    <a href="{% url 'planner:blog' %}">Blog</a>
                 </div>
             </nav>
         </header>
+
         {% block body %}
         {% endblock %}
     </body>
