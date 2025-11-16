@@ -1,0 +1,1115 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Writer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        button.secondary {
+            background-color: #008CBA;
+        }
+        
+        button.secondary:hover {
+            background-color: #007399;
+        }
+        
+        button.danger {
+            background-color: #f44336;
+        }
+        
+        button.danger:hover {
+            background-color: #da190b;
+        }
+        
+        button.warning {
+            background-color: #ff9800;
+        }
+        
+        button.warning:hover {
+            background-color: #e68900;
+        }
+        
+        .comment-option {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .comment-option:hover {
+            background-color: #e8f5e9;
+        }
+        
+        .comment-option.selected {
+            background-color: #c8e6c9;
+            border-color: #4CAF50;
+            border-width: 2px;
+            font-weight: bold;
+        }
+        
+        .comment-option.edit-mode:hover {
+            background-color: #e3f2fd;
+            border-color: #2196F3;
+        }
+        
+        .comment-option.delete-mode:hover {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+        
+        .report-display {
+            background-color: #fff3e0;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+        }
+        
+        .stats {
+            background-color: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .mode-indicator {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .mode-normal {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .mode-edit {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .mode-delete {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .button-active {
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            transform: scale(1.05);
+        }
+        
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            display: none;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+        }
+        
+        .tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Report Writer</h1>
+        
+        <!-- Initial Setup Section -->
+        <div id="setupSection" class="section">
+            <h2>Setup</h2>
+            
+            <label for="className">Class Name:</label>
+            <input type="text" id="className" placeholder="e.g., Year 7 Math">
+            
+            <h3>Comment Bank</h3>
+            <div class="tab-container">
+                <button class="tab active" onclick="switchTab('default')">Use Default Comments</button>
+                <button class="tab" onclick="switchTab('custom')">Load Custom Comments</button>
+                <button class="tab" onclick="switchTab('create')">Create New Comments</button>
+            </div>
+            
+            <div id="defaultTab" class="tab-content active">
+                <p>Use the built-in sample comments to get started.</p>
+            </div>
+            
+            <div id="customTab" class="tab-content">
+                <label for="commentFile">Load Comment Bank (JSON format):</label>
+                <input type="file" id="commentFile" accept=".json,.txt">
+                <p><small>File should contain a JSON array with 4 sub-arrays of comment sentences.</small></p>
+            </div>
+            
+            <div id="createTab" class="tab-content">
+                <label>Create Your Comment Bank:</label>
+                <p>Enter comments for each section (one per line). Use NAME for the student's first name.</p>
+                
+                <div style="margin-bottom: 15px;">
+                    <button type="button" onclick="loadDefaultTemplate()" style="background-color: #2196F3;">Load Default Template</button>
+                    <button type="button" onclick="clearAllComments()" style="background-color: #f44336;">Clear All</button>
+                </div>
+                
+                <div id="commentSections">
+                    <!-- Sections will be dynamically added here -->
+                </div>
+                
+                <button type="button" onclick="addCommentSection()" style="background-color: #4CAF50; margin-top: 15px;">+ Add Section</button>
+            </div>
+            
+            <h3>Student Names</h3>
+            <div class="tab-container">
+                <button class="tab active" onclick="switchStudentTab('manual')">Enter Manually</button>
+                <button class="tab" onclick="switchStudentTab('file')">Load from File</button>
+            </div>
+            
+            <div id="manualStudentTab" class="tab-content active">
+                <p>You'll enter student names one by one as you write reports.</p>
+            </div>
+            
+            <div id="fileStudentTab" class="tab-content">
+                <label for="studentFile">Load Student List (CSV format):</label>
+                <input type="file" id="studentFile" accept=".csv,.txt">
+                <p><small>File should be CSV with columns: FirstName, LastName, Gender (M/F)</small></p>
+            </div>
+            
+            <button onclick="startWriting()">Start Writing Reports</button>
+        </div>
+        
+        <!-- Report Writing Section -->
+        <div id="writingSection" class="section hidden">
+            <h2>Write Reports for <span id="classDisplay"></span></h2>
+            
+            <!-- Student Input -->
+            <div id="studentInput">
+                <label for="studentName">Student Name:</label>
+                <input type="text" id="studentName" placeholder="Enter student's first name">
+                                
+                <button onclick="startReport('F')">Girl</button>
+                <button onclick="startReport('M')">Boy</button>
+                <button onclick="startReport('O')">Other</button>        
+
+            </div>
+            
+            <!-- Comment Selection -->
+            <div id="commentSelection" class="hidden">
+                <h3>Building report for: <span id="currentStudent"></span></h3>
+                <div id="reportProgress" class="report-display"></div>
+                
+                <div id="commentStage">
+                    <h4 id="stageTitle">Select Opening Comment:</h4>
+                    
+                    <!-- Mode controls -->
+                    <div style="margin-bottom: 15px;">
+                        <button id="normalModeBtn" class="button-active" onclick="setMode('normal')">Select to Use</button>
+                        <button id="editModeBtn" class="secondary" onclick="setMode('edit')">Select to Edit</button>
+                        <button id="deleteModeBtn" class="danger" onclick="setMode('delete')">Select to Delete</button>
+                        <button class="secondary" onclick="addNewComment()">Add New</button>
+                        <button id="undoBtn" class="warning hidden" onclick="undoLastComment()">Undo Last</button>
+                    </div>
+                    
+                    <div id="modeIndicator" class="mode-indicator mode-normal">
+                        Click any comment to USE it
+                    </div>
+                    
+                    <div id="commentOptions"></div>
+                </div>
+            </div>
+            
+            <!-- Statistics -->
+            <div id="statistics" class="stats hidden">
+                <h3>Statistics</h3>
+                <p>Reports completed: <span id="reportCount">0</span></p>
+                <p>Time elapsed: <span id="timeElapsed">0</span> minutes</p>
+                <p>Average time per report: <span id="avgTime">N/A</span> minutes</p>
+                <div id="encouragement"></div>
+            </div>
+            
+            <!-- Completed Reports -->
+            <div id="completedReports" class="hidden">
+                <h3>Completed Reports</h3>
+                <button onclick="downloadReports()">Download Reports Now</button>
+                <button onclick="saveCommentBank()">Save Comment Bank</button>
+                <button class="danger" onclick="finishSession()">Finish Session</button>
+                <div id="reportsList"></div>
+            </div>
+        </div>
+        
+        <!-- Modal for editing -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h3 id="modalTitle">Edit Comment</h3>
+                <textarea id="modalInput" rows="4" style="width: 100%;"></textarea>
+                <button onclick="saveModalEdit()">Save</button>
+                <button onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global variables
+        let commentBank = [];
+        let students = [];
+        let currentStudentIndex = 0;
+        let currentStudent = null;
+        let currentReport = '';
+        let currentStage = 0;
+        let selectedCommentIndex = -1;
+        let reports = [];
+        let startTime = null;
+        let reportCount = 0;
+        let currentMode = 'normal';
+        let lastComment = null;
+        let lastReportState = '';
+        let canUndo = false;
+        let timerInterval = null; // Store the interval ID
+        let hasDownloadedOnce = false;
+        let autoSaveEnabled = true;
+                
+        // Pronouns for gender replacement
+        const pronouns = [
+            ['He', 'She'],
+            ['him', 'her'],
+            ['he', 'she'],
+            ['his', 'her'],
+            ['himself', 'herself'],
+            ['His', 'Her'],
+            ['boy', 'girl']
+        ];
+        
+        // Default comments
+        const defaultComments = [
+            [
+                "NAME is a bright enough pupil who is able to listen in class and take notes competently.",
+                "NAME is an average pupil who does not draw one's attention either by conspicuous effort or by poor behaviour.",
+                "Whilst not by any means a gifted pupil, NAME tries hard enough to hide his/her difficulties."
+            ],
+            [
+                "He/She makes a decent comment now and again, and can answer most questions, given time. He/She works well with others.",
+                "While rarely putting his/her hand up to volunteer to answer a question, he/she is capable of creditable comments when called upon.",
+                "He/She is able to summon up serviceable answers to questions on occasions, and will always write down the correct responses if they are written on the board."
+            ],
+            [
+                "He/She generally achieves a grade in the top third of the class in end of topic tests.",
+                "He/She generally gets more than 50% on tests, if not the first time then on the resit.",
+                "He/She has had some creditable marks this term, which has been something of a relief."
+            ],
+            [
+                "He/She should continue to work hard and hope that some understanding will result.",
+                "With continued effort, he/she will achieve creditably average results.",
+                "I wish NAME all the best for the upcoming examinations."
+            ]
+        ];
+
+        // Comment bank creation    
+
+        let commentSectionCount = 0;
+        const sectionTitles = ['Opening Comments', 'Middle Comments 1', 'Middle Comments 2', 'Closing Comments'];
+
+        // Initialize comment sections
+        function initializeCommentSections() {
+            const container = document.getElementById('commentSections');
+            container.innerHTML = '';
+            commentSectionCount = 0;
+            
+            // Create default 4 sections
+            for (let i = 0; i < 4; i++) {
+                addCommentSection(sectionTitles[i]);
+            }
+        }
+
+        // Add a new comment section
+        function addCommentSection(title = null) {
+            const container = document.getElementById('commentSections');
+            const sectionDiv = document.createElement('div');
+            sectionDiv.id = `section_${commentSectionCount}`;
+            sectionDiv.style.cssText = 'margin-bottom: 20px; padding: 15px; background-color: #f0f0f0; border-radius: 5px;';
+            
+            const sectionTitle = title || `Section ${commentSectionCount + 1}`;
+            
+            sectionDiv.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <label style="font-weight: bold; margin: 0;">${sectionTitle}:</label>
+                    ${commentSectionCount > 0 ? `<button type="button" onclick="removeCommentSection(${commentSectionCount})" style="background-color: #f44336; color: white; padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer;">Remove</button>` : ''}
+                </div>
+                <textarea id="comments${commentSectionCount}" rows="3" 
+                    placeholder="e.g., ${getPlaceholderForSection(commentSectionCount)}" 
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+            `;
+            
+            container.appendChild(sectionDiv);
+            commentSectionCount++;
+        }
+
+        // Remove a comment section
+        function removeCommentSection(index) {
+            const section = document.getElementById(`section_${index}`);
+            if (section && confirm('Remove this section?')) {
+                section.remove();
+            }
+        }
+
+        // Get placeholder text for sections
+        function getPlaceholderForSection(index) {
+            const placeholders = [
+                "NAME is a good student who enjoys his/her studies.",
+                "He/She is quiet but conscientious.",
+                "A target for NAME is to participate more in class discussions.",
+                "I wish NAME success in the upcoming exams."
+            ];
+            return placeholders[index] || "Enter your comment here...";
+        }
+
+        // Load default comments as template
+        function loadDefaultTemplate() {
+            if (confirm('This will replace any existing comments with the default template. Continue?')) {
+                // Clear existing sections
+                document.getElementById('commentSections').innerHTML = '';
+                commentSectionCount = 0;
+                
+                // Add sections with default comments
+                defaultComments.forEach((section, index) => {
+                    addCommentSection(sectionTitles[index] || `Section ${index + 1}`);
+                    document.getElementById(`comments${index}`).value = section.join('\n');
+                });
+            }
+        }
+
+        // Clear all comments
+        function clearAllComments() {
+            if (confirm('Clear all comment sections?')) {
+                const textareas = document.querySelectorAll('#commentSections textarea');
+                textareas.forEach(textarea => {
+                    textarea.value = '';
+                });
+            }
+        }
+
+        // Initialize sections when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCommentSections();
+        });        
+
+        // Set mode for comment selection
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Update button styles
+            document.getElementById('normalModeBtn').classList.remove('button-active');
+            document.getElementById('editModeBtn').classList.remove('button-active');
+            document.getElementById('deleteModeBtn').classList.remove('button-active');
+            
+            // Update mode indicator
+            const indicator = document.getElementById('modeIndicator');
+            
+            if (mode === 'normal') {
+                document.getElementById('normalModeBtn').classList.add('button-active');
+                indicator.className = 'mode-indicator mode-normal';
+                indicator.textContent = 'Click any comment to USE it';
+            } else if (mode === 'edit') {
+                document.getElementById('editModeBtn').classList.add('button-active');
+                indicator.className = 'mode-indicator mode-edit';
+                indicator.textContent = 'Click any comment to EDIT it';
+            } else if (mode === 'delete') {
+                document.getElementById('deleteModeBtn').classList.add('button-active');
+                indicator.className = 'mode-indicator mode-delete';
+                indicator.textContent = 'Click any comment to DELETE it';
+            }
+            
+            // Update comment option styles
+            const options = document.querySelectorAll('.comment-option');
+            options.forEach(opt => {
+                opt.className = 'comment-option';
+                if (mode === 'edit') {
+                    opt.classList.add('edit-mode');
+                } else if (mode === 'delete') {
+                    opt.classList.add('delete-mode');
+                }
+            });
+        }
+        
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tabName === 'default') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('defaultTab').classList.add('active');
+            } else if (tabName === 'custom') {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('customTab').classList.add('active');
+            } else if (tabName === 'create') {
+                document.querySelectorAll('.tab')[2].classList.add('active');
+                document.getElementById('createTab').classList.add('active');
+            }
+        }
+        
+        function switchStudentTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-container')[1].querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            if (tabName === 'manual') {
+                tabs[0].classList.add('active');
+                document.getElementById('manualStudentTab').classList.add('active');
+                document.getElementById('fileStudentTab').classList.remove('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('fileStudentTab').classList.add('active');
+                document.getElementById('manualStudentTab').classList.remove('active');
+            }
+        }
+        
+        // Start writing reports
+        function startWriting() {
+            const className = document.getElementById('className').value.trim();
+            if (!className) {
+                alert('Please enter a class name');
+                return;
+            }
+            
+            // Load comment bank based on selected tab
+            const activeTab = document.querySelector('.tab.active').textContent;
+            if (activeTab.includes('Default')) {
+                commentBank = JSON.parse(JSON.stringify(defaultComments));
+            } else if (activeTab.includes('Create')) {
+                commentBank = [];
+                // Collect all comment sections dynamically
+                const sections = document.querySelectorAll('#commentSections textarea');
+                sections.forEach(textarea => {
+                    if (textarea && textarea.value) {
+                        commentBank.push(textarea.value.split('\n').filter(c => c.trim()));
+                    }
+                });
+                
+                if (commentBank.length === 0 || commentBank.every(section => section.length === 0)) {
+                    alert('Please enter some comments or use the default set');
+                    return;
+                }
+            }
+            
+            // Check for student file
+            const studentFile = document.getElementById('studentFile').files[0];
+            if (studentFile) {
+                loadStudentFile(studentFile);
+            }
+            
+            // Initialize timer
+            startTime = Date.now();
+            if (timerInterval) clearInterval(timerInterval); // Clear any existing interval
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Show writing section, hide setup
+            document.getElementById('setupSection').classList.add('hidden');
+            document.getElementById('writingSection').classList.remove('hidden');
+            document.getElementById('classDisplay').textContent = className;
+            document.getElementById('statistics').classList.remove('hidden');
+            
+            // If we have students loaded, start with the first one
+            if (students.length > 0) {
+                loadNextStudent();
+            }
+        }
+        
+        // Load student file
+        function loadStudentFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n');
+                students = [];
+                
+                lines.forEach((line, index) => {
+                    if (index === 0 || !line.trim()) return; // Skip header and empty lines
+                    
+                    const parts = line.split(',');
+                    if (parts.length >= 3) {
+                        students.push({
+                            firstName: parts[0].trim(),
+                            lastName: parts[1].trim(),
+                            gender: parts[2].trim().toUpperCase()
+                        });
+                    }
+                });
+                
+                if (students.length > 0) {
+                    document.getElementById('studentInput').classList.add('hidden');
+                    loadNextStudent();
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // Load next student from list
+        function loadNextStudent() {
+            if (currentStudentIndex < students.length) {
+                currentStudent = students[currentStudentIndex];
+                currentStudentIndex++;
+                startReportForStudent(currentStudent.firstName, currentStudent.gender);
+            } else {
+                alert('All students completed!');
+                document.getElementById('studentInput').classList.remove('hidden');
+            }
+        }
+
+        // do i need this?
+        function getButtonValue(btnId) {
+                var button = document.getElementById(btnId);
+                var value = button.value;
+                return value;
+        }
+        
+        // Start report for a student
+        function startReport(gender) {
+            const name = document.getElementById('studentName').value.trim();
+            const capitalisedName = name.charAt(0).toUpperCase() + name.slice(1);
+            const genderElems = document.getElementsByName('gender');
+
+
+            if (!name || !gender) {
+                alert('Please enter student name and select gender');
+                return;
+            }
+
+            startReportForStudent(capitalisedName, gender);
+        }
+
+        
+        function startReportForStudent(name, gender) {
+            currentStudent = { firstName: name, gender: gender };
+            currentStage = 0;
+            canUndo = false;
+            
+            document.getElementById('studentInput').classList.add('hidden');
+            document.getElementById('commentSelection').classList.remove('hidden');
+            document.getElementById('currentStudent').textContent = name;
+            document.getElementById('undoBtn').classList.add('hidden');
+            
+            showCommentOptions();
+        }
+        
+        // Show comment options for current stage
+        function showCommentOptions() {
+            const stageNames = ['Opening Comment', 'Middle Comment 1', 'Middle Comment 2', 'Closing Comment'];
+            document.getElementById('stageTitle').textContent = `Select ${stageNames[currentStage]}:`;
+            
+            const optionsDiv = document.getElementById('commentOptions');
+            optionsDiv.innerHTML = '';
+            
+            commentBank[currentStage].forEach((comment, index) => {
+                const div = document.createElement('div');
+                div.className = 'comment-option';
+                if (currentMode === 'edit') div.classList.add('edit-mode');
+                if (currentMode === 'delete') div.classList.add('delete-mode');
+                div.textContent = `${index + 1}. ${comment}`;
+                div.onclick = () => selectComment(index);
+                optionsDiv.appendChild(div);
+            });
+            
+            document.getElementById('reportProgress').textContent = currentReport;
+            selectedCommentIndex = -1;
+            
+            // Reset to normal mode after each stage
+            setMode('normal');
+        }
+        
+        // Select a comment based on current mode
+        function selectComment(index) {
+            selectedCommentIndex = index;
+            
+            if (currentMode === 'edit') {
+                // Open edit dialog
+                document.getElementById('modalTitle').textContent = 'Edit Comment';
+                document.getElementById('modalInput').value = commentBank[currentStage][index];
+                document.getElementById('editModal').style.display = 'block';
+                setMode('normal'); // Reset to normal mode
+            } else if (currentMode === 'delete') {
+                // Confirm and delete
+                if (confirm(`Delete comment #${index + 1}: "${commentBank[currentStage][index]}"?`)) {
+                    commentBank[currentStage].splice(index, 1);
+                    showCommentOptions();
+                }
+                setMode('normal'); // Reset to normal mode
+            } else {
+                // Normal mode - use the comment
+                useComment(index);
+            }
+        }
+        
+        // Use the selected comment
+        function useComment(index) {
+            // Store for undo
+            lastReportState = currentReport;
+            lastComment = commentBank[currentStage][index];
+            canUndo = true;
+            
+            // Apply gender changes to the comment before adding
+            const genderAdjustedComment = applyGenderChanges(currentStudent.gender, lastComment);
+            
+            // Add comment to report
+            if (currentStage === 0) {
+                currentReport = genderAdjustedComment
+            } else {
+                currentReport += ' ' + genderAdjustedComment;
+            }
+            currentStage++;
+            
+            if (currentStage < commentBank.length) {
+                document.getElementById('undoBtn').classList.remove('hidden');
+                showCommentOptions();
+            } else {
+                finishReport();
+            }
+        }
+        
+        // Undo last comment
+        function undoLastComment() {
+            if (canUndo && currentStage > 0) {
+                currentReport = lastReportState;
+                currentStage--;
+                canUndo = false;
+                document.getElementById('undoBtn').classList.add('hidden');
+                showCommentOptions();
+            }
+        }
+        
+        // Finish the current report
+        function finishReport() {
+            // Gender changes already applied when comments were added
+            
+            // Add to reports list
+            reports.push({
+                student: currentStudent.firstName,
+                report: currentReport,
+                characterCount: currentReport.length,
+                wordCount: currentReport.split(' ').length
+            });
+            
+            // Update statistics
+            reportCount++;
+            document.getElementById('reportCount').textContent = reportCount;
+            updateEncouragement();
+
+            // Display the report
+            displayCompletedReport(currentReport);
+            
+            // Reset for next student
+            document.getElementById('commentSelection').classList.add('hidden');
+            document.getElementById('completedReports').classList.remove('hidden');
+            
+            // Clear input
+            document.getElementById('studentName').value = '';
+            
+            // If we have more students in the list, load the next one
+            if (students.length > 0 && currentStudentIndex < students.length) {
+                setTimeout(loadNextStudent, 1000);
+            } else {
+                document.getElementById('studentInput').classList.remove('hidden');
+            }
+        }
+        
+        // Apply gender changes to text
+        function applyGenderChanges(gender, text) {
+            const genderIndex = gender === 'F' ? 1 : 0;
+            
+            // Replace NAME placeholder with student's first name
+            text = text.replace(/NAME/g, currentStudent.firstName);
+            
+            // Replace gender pronouns
+            pronouns.forEach(pair => {
+                const pattern = pair[0] + '/' + pair[1];
+                const regex = new RegExp(pattern, 'g');
+                text = text.replace(regex, pair[genderIndex]);
+            });
+            
+            return text;
+        }
+        
+        // Display completed report
+        function displayCompletedReport(report) {
+            const reportsList = document.getElementById('reportsList');
+            const reportDiv = document.createElement('div');
+            reportDiv.className = 'report-display';
+            reportDiv.innerHTML = `<strong>${reports[reports.length - 1].student}:</strong><br>${report}<br><em>${reports[reports.length - 1].wordCount} words, ${reports[reports.length - 1].characterCount} characters.</em>`;
+            // Insert at the beginning to show most recent first
+            reportsList.insertBefore(reportDiv, reportsList.firstChild);
+        }
+        
+        // Add new comment
+        function addNewComment() {
+            document.getElementById('modalTitle').textContent = 'Add New Comment';
+            document.getElementById('modalInput').value = '';
+            document.getElementById('editModal').style.display = 'block';
+        }
+        
+        // Save modal edit
+        function saveModalEdit() {
+            const newText = document.getElementById('modalInput').value.trim();
+            if (!newText) {
+                alert('Please enter some text');
+                return;
+            }
+            
+            if (document.getElementById('modalTitle').textContent.includes('Add')) {
+                commentBank[currentStage].push(newText);
+            } else {
+                commentBank[currentStage][selectedCommentIndex] = newText;
+            }
+            
+            closeModal();
+            showCommentOptions();
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        
+        // Update timer
+        function updateTimer() {
+            if (!startTime) return;
+            
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.round(elapsed / 60); // Round to nearest minute
+            document.getElementById('timeElapsed').textContent = minutes;
+            
+            if (reportCount > 0) {
+                const avgMinutes = Math.round((elapsed / 60) / reportCount * 10) / 10; // One decimal place
+                document.getElementById('avgTime').textContent = avgMinutes;
+            }
+        }
+        
+        // Update encouragement
+        function updateEncouragement() {
+            const goodMessages = ["Well done!", "Keep going!", "You're getting there!", "Excellent progress!"];
+            const slowMessages = ["Take your time!", "Quality over quantity!", "You've got this!"];
+            
+            const elapsed = (Date.now() - startTime) / 1000 / 60; // minutes
+            const avgTime = elapsed / reportCount;
+            
+            const encouragementDiv = document.getElementById('encouragement');
+            if (avgTime < 5) {
+                encouragementDiv.innerHTML = `<strong style="color: green;">${goodMessages[Math.floor(Math.random() * goodMessages.length)]}</strong>`;
+            } else {
+                encouragementDiv.innerHTML = `<strong style="color: orange;">${slowMessages[Math.floor(Math.random() * slowMessages.length)]}</strong>`;
+            }
+        }
+        
+        // Download reports as text
+        function olddownloadReports() {
+            const className = document.getElementById('className').value;
+            let content = `Reports for ${className}\n`;
+            content += '='.repeat(50) + '\n\n';
+            
+            // Keep original order when downloading
+            reports.forEach(r => {
+                content += `${r.student}:\n${r.report}\n\nWord count: ${r.wordCount}  `;
+                content += `${r.characterCount}\n\n`;
+                content += '-'.repeat(40) + '\n\n';
+            });
+            
+            downloadFile(content, `reports_${className.replace(/\s+/g, '_')}.txt`, 'text/plain');
+        }
+        
+        // Download reports as text
+        function downloadReports(showAlert = false) {
+            const className = document.getElementById('className').value;
+            const filename = `reports_${className.replace(/\s+/g, '_')}.txt`;
+            let content = `Reports for ${className}\n`;
+            content += '='.repeat(50) + '\n\n';
+            
+            // Keep original order when downloading
+            reports.forEach(r => {
+                content += `${r.student}:\n${r.report}\n\nWord count: ${r.wordCount}  `;
+                content += `Character count: ${r.characterCount}\n\n`;
+                content += '-'.repeat(40) + '\n\n';
+            });
+            
+            // Only show alert if explicitly requested (like from finish button)
+            if (showAlert) {
+                alert(`Reports saved to: ${filename}\n\nCheck your Downloads folder.`);
+            }
+            
+            downloadFile(content, filename, 'text/plain');
+        }
+
+
+        // Show non-blocking save status
+        function showSaveStatus(message, brief = false) {
+            // Remove existing status if any
+            const existingStatus = document.getElementById('saveStatus');
+            if (existingStatus) {
+                existingStatus.remove();
+            }
+            
+            // Create status div
+            const statusDiv = document.createElement('div');
+            statusDiv.id = 'saveStatus';
+            statusDiv.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                z-index: 1000;
+            `;
+            statusDiv.textContent = message;
+            document.body.appendChild(statusDiv);
+            
+            // Auto-hide after a brief moment
+            setTimeout(() => {
+                statusDiv.remove();
+            }, brief ? 100 : 3000);
+        }        
+
+        // Finish session and return to start
+        function finishSession() {
+            if (reports.length > 0) {
+                downloadReports(true);  // Pass true to show the alert
+            }
+            const shouldFinish = confirm(
+                'Are you sure you want to finish this session?\n\n' +
+                'Make sure you have ' +
+                '• Saved your comment bank (if modified)\n\n' +
+                'Click OK to return to the setup page.'
+            );
+            
+            if (shouldFinish) {
+                // Clear the timer interval
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                
+                // Reset all variables
+                commentBank = [];
+                students = [];
+                currentStudentIndex = 0;
+                currentStudent = null;
+                currentReport = '';
+                currentStage = 0;
+                selectedCommentIndex = -1;
+                reports = [];
+                startTime = null;
+                reportCount = 0;
+                currentMode = 'normal';
+                lastComment = null;
+                lastReportState = '';
+                canUndo = false;
+                
+                // Clear form inputs
+                document.getElementById('className').value = '';
+                document.getElementById('studentName').value = '';
+                document.getElementById('reportsList').innerHTML = '';
+                document.getElementById('reportCount').textContent = '0';
+                document.getElementById('timeElapsed').textContent = '0';
+                document.getElementById('avgTime').textContent = 'N/A';
+                document.getElementById('encouragement').innerHTML = '';
+                
+                // Clear file inputs
+                document.getElementById('commentFile').value = '';
+                document.getElementById('studentFile').value = '';
+                
+                // Clear create comment textareas
+                for (let i = 0; i < 4; i++) {
+                    const textarea = document.getElementById(`comments${i}`);
+                    if (textarea) textarea.value = '';
+                }
+                
+                // Hide all sections except setup
+                document.getElementById('setupSection').classList.remove('hidden');
+                document.getElementById('writingSection').classList.add('hidden');
+                document.getElementById('studentInput').classList.remove('hidden');
+                document.getElementById('commentSelection').classList.add('hidden');
+                document.getElementById('statistics').classList.add('hidden');
+                document.getElementById('completedReports').classList.add('hidden');
+                document.getElementById('undoBtn').classList.add('hidden');
+                
+                // Reset tabs to default
+                switchTab('default');
+                switchStudentTab('manual');
+            }
+        }
+        
+        // Save comment bank
+        function saveCommentBank() {
+            const className = document.getElementById('className').value;
+            const data = {
+                className: className,
+                commentBank: commentBank
+            };
+            
+            downloadFile(JSON.stringify(data, null, 2), `comment_bank_${className.replace(/\s+/g, '_')}.json`, 'application/json');
+        }
+        
+        // Generic download function
+        function downloadFile(content, fileName, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Load comment file
+        document.getElementById('commentFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    if (data.commentBank) {
+                        commentBank = data.commentBank;
+                    } else if (Array.isArray(data)) {
+                        commentBank = data;
+                    }
+                    alert('Comment bank loaded successfully!');
+                } catch (error) {
+                    alert('Error loading comment bank. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+        });
+        
+        // Handle window click for modal
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+    </script>
+
+</body>
+</html>

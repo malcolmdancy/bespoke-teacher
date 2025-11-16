@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Planner Order Form</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .day-container {
+            margin-bottom: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .controls {
+            margin: 20px 0;
+        }
+        
+        .verification {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f7e8;
+            border-radius: 8px;
+            border-left: 5px solid #27ae60;
+        }
+        
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: #ddd;
+            z-index: 1;
+        }
+        
+        .progress-step {
+            width: 18%;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        
+        .step-circle {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .active .step-circle {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .completed .step-circle {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .step-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .summary-table {
+            margin-top: 15px;
+        }
+        
+        .day-section {
+            display: none;
+        }
+        
+        .day-section.active {
+            display: block;
+        }
+        
+        #final-summary-section {
+            display: none;
+        }
+        
+        #final-summary-section.active {
+            display: block;
+        }
+        
+        /* Debug styles */
+        .debug-info {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        /* Visual Console for debugging when console.log isn't visible */
+        #visual-console {
+            background-color: #000;
+            color: #00ff00;
+            font-family: monospace;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teacher Planner Order Form</h1>
+    
+    <div class="progress-bar">
+        <div class="progress-step active" id="step-monday">
+            <div class="step-circle">1</div>
+            <div class="step-name">Monday</div>
+        </div>
+        <div class="progress-step" id="step-tuesday">
+            <div class="step-circle">2</div>
+            <div class="step-name">Tuesday</div>
+        </div>
+        <div class="progress-step" id="step-wednesday">
+            <div class="step-circle">3</div>
+            <div class="step-name">Wednesday</div>
+        </div>
+        <div class="progress-step" id="step-thursday">
+            <div class="step-circle">4</div>
+            <div class="step-name">Thursday</div>
+        </div>
+        <div class="progress-step" id="step-friday">
+            <div class="step-circle">5</div>
+            <div class="step-name">Friday</div>
+        </div>
+        <div class="progress-step" id="step-review">
+            <div class="step-circle">6</div>
+            <div class="step-name">Review</div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Monday Section -->
+        <div class="day-section active" id="monday-section">
+            <h2>Monday Classes</h2>
+            <p>Please enter your class information for Monday. Leave as "No Class" if you don't teach during a particular period.</p>
+            
+            <table id="monday-table">
+                <thead>
+                    <tr>
+                        <th>Lesson #</th>
+                        <th>Class Name</th>
+                        <th>Room</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Will be populated by JS -->
+                </tbody>
+            </table>
+            
+            <div class="controls">
+                <button type="button" id="monday-next">Review Monday Schedule</button>
+            </div>
+        </div>
+        
+        <!-- Tuesday Section -->
+        <div class="day-section" id="tuesday-section">
+            <h2>Tuesday Classes</h2>
+            <p>Please enter your class information for Tuesday. Leave as "No Class" if you don't teach during a particular period.</p>
+            
+            <table id="tuesday-table">
+                <thead>
+                    <tr>
+                        <th>Lesson #</th>
+                        <th>Class Name</th>
+                        <th>Room</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Will be populated by JS -->
+                </tbody>
+            </table>
+            
+            <div class="controls">
+                <button type="button" id="tuesday-prev">Back to Monday</button>
+                <button type="button" id="tuesday-next">Review Tuesday Schedule</button>
+            </div>
+        </div>
+        
+        <!-- Wednesday Section -->
+        <div class="day-section" id="wednesday-section">
+            <h2>Wednesday Classes</h2>
+            <p>Please enter your class information for Wednesday. Leave as "No Class" if you don't teach during a particular period.</p>
+            
+            <table id="wednesday-table">
+                <thead>
+                    <tr>
+                        <th>Lesson #</th>
+                        <th>Class Name</th>
+                        <th>Room</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Will be populated by JS -->
+                </tbody>
+            </table>
+            
+            <div class="controls">
+                <button type="button" id="wednesday-prev">Back to Tuesday</button>
+                <button type="button" id="wednesday-next">Review Wednesday Schedule</button>
+            </div>
+        </div>
+        
+        <!-- Thursday Section -->
+        <div class="day-section" id="thursday-section">
+            <h2>Thursday Classes</h2>
+            <p>Please enter your class information for Thursday. Leave as "No Class" if you don't teach during a particular period.</p>
+            
+            <table id="thursday-table">
+                <thead>
+                    <tr>
+                        <th>Lesson #</th>
+                        <th>Class Name</th>
+                        <th>Room</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Will be populated by JS -->
+                </tbody>
+            </table>
+            
+            <div class="controls">
+                <button type="button" id="thursday-prev">Back to Wednesday</button>
+                <button type="button" id="thursday-next">Review Thursday Schedule</button>
+            </div>
+        </div>
+        
+        <!-- Friday Section -->
+        <div class="day-section" id="friday-section">
+            <h2>Friday Classes</h2>
+            <p>Please enter your class information for Friday. Leave as "No Class" if you don't teach during a particular period.</p>
+            
+            <table id="friday-table">
+                <thead>
+                    <tr>
+                        <th>Lesson #</th>
+                        <th>Class Name</th>
+                        <th>Room</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Will be populated by JS -->
+                </tbody>
+            </table>
+            
+            <div class="controls">
+                <button type="button" id="friday-prev">Back to Thursday</button>
+                <button type="button" id="friday-next">Review Friday Schedule</button>
+            </div>
+        </div>
+        
+        <!-- Final Summary Section -->
+        <div id="final-summary-section">
+            <h2>Final Review: Your Weekly Schedule</h2>
+            <p>Please review your complete weekly schedule before confirming your order.</p>
+            
+            <div class="day-container">
+                <h3>Monday</h3>
+                <div id="monday-summary"></div>
+            </div>
+            
+            <div class="day-container">
+                <h3>Tuesday</h3>
+                <div id="tuesday-summary"></div>
+            </div>
+            
+            <div class="day-container">
+                <h3>Wednesday</h3>
+                <div id="wednesday-summary"></div>
+            </div>
+            
+            <div class="day-container">
+                <h3>Thursday</h3>
+                <div id="thursday-summary"></div>
+            </div>
+            
+            <div class="day-container">
+                <h3>Friday</h3>
+                <div id="friday-summary"></div>
+            </div>
+            
+            <div class="verification">
+                <p>Please confirm that all your weekly class information is correct. Your planner will be populated with these classes for the entire teaching year.</p>
+                
+                <div class="controls">
+                    <button type="button" id="review-prev">Edit Schedule</button>
+                    <button type="button" id="confirm-order">Confirm and Order</button>
+                </div>
+            </div>
+            
+            <div class="debug-info">
+                <p>Debug Information:</p>
+                <div id="debug-output"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Visual Console for logging messages -->
+    <div id="visual-console">
+        <h3>Debug Console</h3>
+        <div id="console-output"></div>
+    </div>
+
+    <script>
+        // Store class data
+        let weeklySchedule = {
+            'Monday': [],
+            'Tuesday': [],
+            'Wednesday': [],
+            'Thursday': [],
+            'Friday': []
+        };
+        
+        // Custom log function that writes to both console and our visual console
+        function customLog(message, data) {
+            // Standard console.log
+            if (data) {
+                console.log(message, data);
+            } else {
+                console.log(message);
+            }
+            
+            // Write to visual console
+            const consoleOutput = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            let logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            
+            if (data) {
+                let dataStr;
+                try {
+                    dataStr = JSON.stringify(data);
+                } catch (e) {
+                    dataStr = "[Object cannot be stringified]";
+                }
+                logEntry.innerHTML = `<span class="timestamp">${timestamp}</span> ${message}: ${dataStr}`;
+            } else {
+                logEntry.innerHTML = `<span class="timestamp">${timestamp}</span> ${message}`;
+            }
+            
+            consoleOutput.appendChild(logEntry);
+            
+            // Auto-scroll to bottom
+            const visualConsole = document.getElementById('visual-console');
+            visualConsole.scrollTop = visualConsole.scrollHeight;
+        }
+        
+        // Helper function to create table rows for each day
+        function createDayTable(day) {
+            customLog(`Creating table for ${day}`);
+            const tableId = day.toLowerCase() + '-table';
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            
+            // Clear existing rows
+            tbody.innerHTML = '';
+            
+            // Create 6 lesson rows
+            for (let i = 1; i <= 6; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i}</td>
+                    <td><input type="text" id="${day.toLowerCase()}-lesson-${i}-class" value="No Class"></td>
+                    <td><input type="text" id="${day.toLowerCase()}-lesson-${i}-room" value=""></td>
+                `;
+                tbody.appendChild(row);
+            }
+            customLog(`Finished creating table for ${day}`);
+        }
+        
+        // Initialize all day tables
+        function initializeTables() {
+            customLog("Initializing all day tables");
+            createDayTable('Monday');
+            createDayTable('Tuesday');
+            createDayTable('Wednesday');
+            createDayTable('Thursday');
+            createDayTable('Friday');
+            customLog("All tables initialized");
+        }
+        
+        // Save data for a specific day
+        function saveDayData(day) {
+            customLog(`Saving data for ${day}`);
+            const dayData = [];
+            
+            for (let i = 1; i <= 6; i++) {
+                const classNameInput = document.getElementById(`${day.toLowerCase()}-lesson-${i}-class`);
+                const roomInput = document.getElementById(`${day.toLowerCase()}-lesson-${i}-room`);
+                
+                if (classNameInput && roomInput) {
+                    const className = classNameInput.value;
+                    const room = roomInput.value;
+                    
+                    dayData.push({
+                        day: day,
+                        lessonNumber: i,
+                        className: className,
+                        room: room || ''
+                    });
+                } else {
+                    customLog(`WARNING: Could not find inputs for ${day} lesson ${i}`);
+                }
+            }
+            
+            weeklySchedule[day] = dayData;
+            customLog(`${day} data saved:`, dayData);
+        }
+        
+        // Create a summary table for a specific day
+        function createSummaryTable(day) {
+            customLog(`Creating summary table for ${day}`);
+            const dayData = weeklySchedule[day];
+            const summaryId = day.toLowerCase() + '-summary';
+            const summaryContainer = document.getElementById(summaryId);
+            
+            if (!summaryContainer) {
+                customLog(`ERROR: Summary container for ${day} not found`);
+                return;
+            }
+            
+            let summaryHTML = `
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Lesson #</th>
+                            <th>Class Name</th>
+                            <th>Room</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            dayData.forEach(lesson => {
+                summaryHTML += `
+                    <tr>
+                        <td>${lesson.lessonNumber}</td>
+                        <td>${lesson.className}</td>
+                        <td>${lesson.room}</td>
+                    </tr>
+                `;
+            });
+            
+            summaryHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            summaryContainer.innerHTML = summaryHTML;
+            customLog(`Summary table for ${day} created successfully`);
+        }
+        
+        // Show all weekly data in the final summary
+        function showFinalSummary() {
+            customLog('Running showFinalSummary()');
+            try {
+                createSummaryTable('Monday');
+                createSummaryTable('Tuesday');
+                createSummaryTable('Wednesday');
+                createSummaryTable('Thursday');
+                createSummaryTable('Friday');
+                customLog('All summary tables created successfully');
+                
+                // Debug output
+                const debugOutput = document.getElementById('debug-output');
+                if (debugOutput) {
+                    let debugHTML = '<pre>';
+                    for (const day in weeklySchedule) {
+                        debugHTML += `${day}: ${weeklySchedule[day].length} lessons\n`;
+                    }
+                    debugHTML += '</pre>';
+                    debugOutput.innerHTML = debugHTML;
+                    customLog('Debug output updated');
+                }
+            } catch (error) {
+                customLog('Error in showFinalSummary:', error.message);
+                alert('There was an error displaying your schedule. Please try again.');
+            }
+        }
+        
+        // Navigation function - show specific section
+        function showSection(sectionId) {
+            customLog(`Showing section: ${sectionId}`);
+            // Hide all day sections
+            document.querySelectorAll('.day-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Hide final summary
+            document.getElementById('final-summary-section').classList.remove('active');
+            
+            // Show the requested section
+            if (sectionId === 'review') {
+                document.getElementById('final-summary-section').classList.add('active');
+                customLog('Final summary section activated');
+            } else {
+                const targetSection = document.getElementById(sectionId + '-section');
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    customLog(`${sectionId} section activated`);
+                } else {
+                    customLog(`ERROR: Section ${sectionId}-section not found`);
+                }
+            }
+            
+            // Update progress bar
+            updateProgressBar(sectionId);
+        }
+        
+        // Update progress bar based on current section
+        function updateProgressBar(currentSection) {
+            customLog(`Updating progress bar to: ${currentSection}`);
+            const steps = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'review'];
+            const currentIndex = steps.indexOf(currentSection);
+            
+            // Reset all steps
+            document.querySelectorAll('.progress-step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            
+            // Mark completed steps
+            for (let i = 0; i < currentIndex; i++) {
+                const stepElement = document.getElementById('step-' + steps[i]);
+                if (stepElement) {
+                    stepElement.classList.add('completed');
+                }
+            }
+            
+            // Mark current step as active
+            const currentStepElement = document.getElementById('step-' + steps[currentIndex]);
+            if (currentStepElement) {
+                currentStepElement.classList.add('active');
+            }
+        }
+        
+        // Mock function for submitting order data (since it was missing)
+        function submitOrderData(orderData) {
+            customLog('Submitting order data', orderData);
+            
+            // This is a mock implementation that simulates a server request
+            return new Promise((resolve, reject) => {
+                // Simulate network delay
+                setTimeout(() => {
+                    // Generate a random order ID
+                    const orderId = 'ORD-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+                    
+                    customLog('Order submitted successfully with ID:', orderId);
+                    
+                    // Simulate successful response
+                    resolve({
+                        success: true,
+                        orderId: orderId,
+                        message: 'Order received successfully'
+                    });
+                    
+                    // To test error handling, uncomment this and comment out the resolve above
+                    // reject(new Error('Network error'));
+                }, 1500);
+            });
+        }
+        
+        // Initialize the page
+        function init() {
+            customLog('Initializing application');
+            initializeTables();
+            
+            // Monday navigation
+            document.getElementById('monday-next').addEventListener('click', function() {
+                customLog('Monday Next button clicked');
+                saveDayData('Monday');
+                showSection('tuesday');
+            });
+            
+            // Tuesday navigation
+            document.getElementById('tuesday-prev').addEventListener('click', function() {
+                customLog('Tuesday Prev button clicked');
+                saveDayData('Tuesday');
+                showSection('monday');
+            });
+            
+            document.getElementById('tuesday-next').addEventListener('click', function() {
+                customLog('Tuesday Next button clicked');
+                saveDayData('Tuesday');
+                showSection('wednesday');
+            });
+            
+            // Wednesday navigation
+            document.getElementById('wednesday-prev').addEventListener('click', function() {
+                customLog('Wednesday Prev button clicked');
+                saveDayData('Wednesday');
+                showSection('tuesday');
+            });
+            
+            document.getElementById('wednesday-next').addEventListener('click', function() {
+                customLog('Wednesday Next button clicked');
+                saveDayData('Wednesday');
+                showSection('thursday');
+            });
+            
+            // Thursday navigation
+            document.getElementById('thursday-prev').addEventListener('click', function() {
+                customLog('Thursday Prev button clicked');
+                saveDayData('Thursday');
+                showSection('wednesday');
+            });
+            
+            document.getElementById('thursday-next').addEventListener('click', function() {
+                customLog('Thursday Next button clicked');
+                saveDayData('Thursday');
+                showSection('friday');
+            });
+            
+            // Friday navigation
+            document.getElementById('friday-prev').addEventListener('click', function() {
+                customLog('Friday Prev button clicked');
+                saveDayData('Friday');
+                showSection('thursday');
+            });
+            
+            document.getElementById('friday-next').addEventListener('click', function() {
+                customLog('Friday Next button clicked');
+                saveDayData('Friday');
+                customLog('Friday data saved:', weeklySchedule['Friday']);
+                showFinalSummary();
+                customLog('Final summary should be displayed now');
+                showSection('review');
+                customLog('Now showing review section');
+                
+                // Force check if the review section is visible
+                setTimeout(() => {
+                    const finalSummary = document.getElementById('final-summary-section');
+                    customLog('Review section visible:', finalSummary.classList.contains('active'));
+                    if (!finalSummary.classList.contains('active')) {
+                        customLog('Manually activating review section');
+                        document.querySelectorAll('.day-section').forEach(section => {
+                            section.classList.remove('active');
+                        });
+                        finalSummary.classList.add('active');
+                        updateProgressBar('review');
+                    }
+                }, 100);
+            });
+            
+            // Review navigation
+            document.getElementById('review-prev').addEventListener('click', function() {
+                customLog('Review Prev button clicked');
+                showSection('friday');
+            });
+            
+            document.getElementById('confirm-order').addEventListener('click', function() {
+                customLog('Confirm Order button clicked');
+                // Show loading state
+                const confirmBtn = document.getElementById('confirm-order');
+                const originalText = confirmBtn.textContent;
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = 'Processing...';
+                
+                // Prepare data for submission
+                const orderData = {
+                    weeklySchedule: weeklySchedule,
+                    timestamp: new Date().toISOString(),
+                    // Add any additional customer data you need here
+                    // customerId: '...',
+                    // customerName: '...',
+                };
+                
+                // Send data to server
+                submitOrderData(orderData)
+                    .then(response => {
+                        // Show success message with order ID
+                        const orderId = response.orderId;
+                        customLog('Order submitted successfully with ID:', orderId);
+                        
+                        // Create success message element
+                        const successMessage = document.createElement('div');
+                        successMessage.className = 'verification';
+                        successMessage.style.backgroundColor = '#e8f7e8';
+                        successMessage.style.marginTop = '20px';
+                        successMessage.style.borderLeft = '5px solid #27ae60';
+                        successMessage.innerHTML = `
+                            <h3>Order Successfully Submitted!</h3>
+                            <p>Your order has been received and is being processed.</p>
+                            <p><strong>Order ID:</strong> ${orderId}</p>
+                            <p>A confirmation email will be sent to your registered email address.</p>
+                            <button id="proceed-to-checkout">Proceed to Checkout</button>
+                        `;
+                        
+                        // Add success message to page
+                        document.querySelector('.verification').appendChild(successMessage);
+                        
+                        // Setup checkout button
+                        document.getElementById('proceed-to-checkout').addEventListener('click', function() {
+                            customLog('Proceed to Checkout button clicked');
+                            window.location.href = '/checkout?orderId=' + orderId;
+                        });
+                    })
+                    .catch(error => {
+                        // Show error message
+                        alert('There was an error submitting your order. Please try again or contact support.');
+                        customLog('Order submission error:', error);
+                        
+                        // Reset button
+                        confirmBtn.disabled = false;
+                        confirmBtn.textContent = originalText;
+                    });
+            });
+            
+            customLog('Application initialization complete');
+        }
+        
+        // Initialize on load
+        window.addEventListener('load', function() {
+            customLog('Window loaded');
+            init();
+        });
+    </script>
+</body>
+</html>
